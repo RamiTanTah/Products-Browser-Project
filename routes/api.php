@@ -22,4 +22,6 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => ['api'] , 'namespace' => 'Api'],function(){
 // put your api route here 
 
+    Route::post('register','User\UserController@register');
+
 });
