@@ -1,14 +1,19 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+use App\Models\Comment;
+use App\Models\Product;
 
 class User extends Authenticatable
 {
     use Notifiable;
+    use SoftDelete;
 
     /**
      * The attributes that are mass assignable.
@@ -16,7 +21,13 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+      'name',
+      'email',
+      'phone',
+      'address',
+      'facebook',
+      'birthdate',
+      'password',
     ];
 
     /**
@@ -36,4 +47,15 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public $timestamp = true;
+
+    public function product(){
+      return $this->hasMany(Product::class);
+    }
+
+    public function comments(){
+      return $this->hasMany(Comment::class);
+    }
+
 }

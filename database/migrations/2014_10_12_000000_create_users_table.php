@@ -13,16 +13,36 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
-        });
-    }
+      Schema::create('users', function (Blueprint $table) {
+          $table->id();
+          $table->string('name');
+          $table->string('phone');
+          $table->string('address');
+          $table->string('email')->unique();
+          $table->string('facebook')->nullable();
+          $table->date('birthdate');
+          $table->string('password');
+
+          $table->timestamp('email_verified_at')->nullable();
+          $table->rememberToken();
+          
+          $table->softDeletes();
+          $table->timestamps();
+      });
+
+      
+      DB::table('users')->insert([
+        [
+          'name' => 'user1',
+          'password' => bcrypt('12345678'),
+          'email' => 'user1@admin.com',
+          'phone' => '0999999999',
+          'address' => 'fdklsj;afslkj',
+          'facebook' => 'user1/facebook',
+          'birthdate' => '2021-08-18',
+        ]
+      ]);
+  }
 
     /**
      * Reverse the migrations.
