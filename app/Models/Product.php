@@ -52,4 +52,52 @@ public $timestamp = true;
   public function discountOffers(){
     return $this->hasMany(DiscountOffer::class);
   }
+
+  public const VALIDATION_RULES = [
+
+    'name_ar'  => [
+      'required'  ,
+      'string'    ,
+      'max:50'   ,
+      'min:3'
+    ],
+    'name_en'  => [
+      'required'  ,
+      'string'    ,
+      'max:50'   ,
+      'min:3'
+    ],
+    'description_ar' => [
+      'string'  ,
+      'max:500' ,
+      'nullable' 
+    ],
+    'description_en' => [
+      'string'  ,
+      'max:500' ,
+      'nullable' 
+    ],
+    'quantity' => [
+      'required'  ,
+      'integer'   ,
+      'min:1'
+    ],
+    'price' => [
+      'required'  ,
+      'integer'   ,
+      'min:1'
+    ],
+    'production_date' => [
+      'date',
+      'before_or_equal:expired_date',
+      'nullable' ,
+    ],
+    'expired_date' => [
+      'date',
+      'after_or_equal:production_date',
+      'nullable' ,
+    ], 
+  ];
 }
+
+
