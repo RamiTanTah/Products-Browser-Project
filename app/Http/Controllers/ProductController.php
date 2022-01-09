@@ -69,16 +69,16 @@ class ProductController extends Controller
 
 
 
-        $date = Carbon::now();
-        $date1=Carbon::createFromFormat('Y-m-d', $product->expired_date);
-        $def_date = $date->diff($date1);
-        $days = $def_date->format('%a');
-        $price=$product->price;
-        if($days>=10){
-            $percent=100-$product->price_after_discount;
+        // $date = Carbon::now();
+        // $date1=Carbon::createFromFormat('Y-m-d', $product->expired_date);
+        // $def_date = $date->diff($date1);
+        // $days = $def_date->format('%a');
+        // $price=$product->price;
+        // if($days>=10){
+        //     $percent=100-$product->price_after_discount;
             
-        }
-        $price=($product->price)*($percent/100);
+        // }
+        // $price=($product->price)*($percent/100);
 
 
         $product-> save();
@@ -209,5 +209,26 @@ class ProductController extends Controller
             $response['data'] = '';
             $response['message'] = "Error Not Found";
             return response()->json($response,404);
+    }
+
+
+    public function searchByName($keyword)
+    {
+
+            $product=Product::where(function ($query) use ($keyword) {
+                $query->where('name_en', 'LIKE', "%$keyword%");
+            })->get();
+        
+        return $product;
+    }
+
+    public function searchByCategory($keyword)
+    {
+
+            $products=Product::where(function ($query) use ($keyword) {
+                $query->where('name_en', 'LIKE', "%$keyword%");
+            })->get();
+        
+        return $products;
     }
 }

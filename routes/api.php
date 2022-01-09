@@ -19,8 +19,13 @@ use Illuminate\Support\Facades\Route;
 // });
 
 
-Route::group(['middleware' => ['api'] , 'namespace' => 'Api'],function(){
+Route::group(['middleware' => ['api']],function(){
+  
 // put your api route here 
+
+Route::post('register', 'AuthController@register');
+Route::post('login', 'AuthController@login');
+Route::get('logout', 'AuthController@logout');
 
 });
 
@@ -29,3 +34,4 @@ Route::group(['middleware' => ['api'] , 'namespace' => 'Api'],function(){
 // ProductController Api's
 Route::resource('products','ProductController');
 Route::post('/products/update/{id}', 'ProductController@update');
+Route::get('/products/searchByName/{name}', 'ProductController@searchByName');
