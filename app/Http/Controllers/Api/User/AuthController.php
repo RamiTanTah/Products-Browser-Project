@@ -6,10 +6,18 @@ use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Traits\HandleResponse;
+use Validator;
+
+
+// use Auth;
+
 
 
 class AuthController extends Controller
 {
+
+  use HandleResponse;
     /**
      * Create a new AuthController instance.
      *
@@ -25,15 +33,62 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(Request $request)
     {
-        $credentials = request(['email', 'password']);
+        
+        try {
+            $rules = [
+            "email" => "required",
+            "password" => "required"
 
-        if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                $code = $this->returnCodeAccordingToInput($validator);
+                return $this->returnValidationError($code, $validator);
+            }
+
+            //login
+
+            $credentials = $request->only(['email', 'password']);
+            
+            $token = Auth::guard('api')->attempt($credentials);  //generate token
+            return $token;
+
+            if (!$token) {
+                return $this->returnError('E001', 'the informations is not true');
+            }
+
+            $user = Auth::guard('api')->user();
+            $user ->api_token = $token;
+            //return token
+        return $this->returnData('user', $user);  //return json response
+        } catch (\Exception $ex) {
+            return $this->returnError($ex->getCode(), $ex->getMessage());
         }
 
-        return $this->respondWithToken($token);
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // $credentials = request(['email', 'password']);
+
+        // if (! $token = auth()->attempt($credentials)) {
+        //     return response()->json(['error' => 'Unauthorized'], 401);
+        // }
+
+        // return $this->respondWithToken($token);
     }
 
     /**

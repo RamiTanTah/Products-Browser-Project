@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\User;
 
 class UserRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class UserRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,15 +24,9 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
-      $rules = Project::VALIDATION_RULES;
+      $rules = User::VALIDATION_RULES;
       if ($this -> getMethod() == 'POST'){  //Store 
       return $rules;
       }
-      else{     //update
-        // $rules ['name'] [4]= 'unique:users,name,'. request()->route('id');
-        // $rules ['email'] [4]= 'unique:users,email,'. request()->route('id');
-        return $rules;
-      }
-      return $rules;
     }
 }
