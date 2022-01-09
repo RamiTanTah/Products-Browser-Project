@@ -10,6 +10,9 @@ use App\Models\Comment;
 use App\Models\DiscountOffer;
 use App\Http\Request\ProductRequest;
 
+use Carbon\Carbon;
+
+
 class ProductController extends Controller
 {
     /**
@@ -42,7 +45,9 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProductRequest $request)
+
+    public function store(Request $request)
+
     {
         $product = new Product;
         $product->name_ar = $request->name_ar;
@@ -58,6 +63,23 @@ class ProductController extends Controller
         //$product->is_expired = $request->is_expired;
         $product->views = $request->views;
         $product->likes = $request->likes;
+
+        $product->user_id = $request->user_id;
+        $product->category_id = $request->category_id;
+
+
+
+        $date = Carbon::now();
+        $date1=Carbon::createFromFormat('Y-m-d', $product->expired_date);
+        $def_date = $date->diff($date1);
+        $days = $def_date->format('%a');
+        $price=$product->price;
+        if($days>=10){
+            $percent=100-$product->price_after_discount;
+            
+        }
+        $price=($product->price)*($percent/100);
+
 
         $product-> save();
 
@@ -105,12 +127,16 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ProductRequest $request, $id)
+
+    public function update(Request $request, $id)
     {
-        $product = product::where('id' , $id)->first();
+        $product = Product::find($id);
+        
      if (isset($product)) {
      	if (isset($request->name_ar)) {
      		$product->name_ar = $request->name_ar;
+ 
+
      	}
         if (isset($request->name_en)) {
             $product->name_en = $request->name_en;
@@ -139,9 +165,7 @@ class ProductController extends Controller
      	if (isset($request->expired_date)) {
      		$product->expired_date = $request->expired_date;
      	}
-     	// if (isset($request->is_expired)) {
-     	// 	$product->is_expired = $request->is_expired;
-     	// }
+
         if (isset($request->views)) {
             $product->views = $request->views;
         }
@@ -149,8 +173,10 @@ class ProductController extends Controller
      		$product->likes = $request->likes;
      	}
 
-	    
-	     $product->save();
+         
+	    $product->save();
+
+
         $response['data'] = $product;
         $response['message'] = "success";
         return response()->json($response,200);
@@ -169,10 +195,12 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $product = product::where('id' , $id)->first();
+
+        $product = product::find($id);
         if (isset($product)) {
             $product->delete();
-            
+
+
             $response['data'] = '';
             $response['message'] = "Deleted success";
             return response()->json($response,200);

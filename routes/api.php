@@ -23,3 +23,9 @@ Route::group(['middleware' => ['api'] , 'namespace' => 'Api'],function(){
 // put your api route here 
 
 });
+
+
+
+// ProductController Api's
+Route::resource('products','ProductController');
+Route::post('/products/update/{id}', 'ProductController@update');

@@ -29,8 +29,10 @@ class CreateProductsTable extends Migration
             $table->integer('views')->default(0);
             $table->integer('likes')->default(0);
 
-            $table->foreignId('user_id')->references('id')->on('users');
-            $table->foreignId('category_id')->references('id')->on('categories');
+            $table->bigInteger('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->bigInteger('category_id')->unsigned();
+            $table->foreign('category_id')->references('id')->on('categories');
 
             $table->softDeletes();
             $table->timestamps();
